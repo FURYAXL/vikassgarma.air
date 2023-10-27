@@ -1,16 +1,41 @@
-(function() {
-  $('.btn').click(function() {
-    $('.btn').addClass('pending');
-    $('.progress').addClass('active');
-    setTimeout((function() {
-      return $('.progress').removeClass('active');
-    }), 2300);
-    return setTimeout((function() {
-      return $('.btn').removeClass('pending');
-    }), 3600);
+// external js: isotope.pkgd.js
+
+// init Isotope
+var $grid = $('.grid').isotope({
+  itemSelector: '.musour-icon'
+});
+
+// store filter for each group
+var filters = {};
+
+$('.filters').on( 'click', '.button', function( event ) {
+  var $button = $( event.currentTarget );
+  // get group key
+  var $buttonGroup = $button.parents('.button-group');
+  var filterGroup = $buttonGroup.attr('data-filter-group');
+  // set filter for group
+  filters[ filterGroup ] = $button.attr('data-filter');
+  // combine filters
+  var filterValue = concatValues( filters );
+  // set filter for Isotope
+  $grid.isotope({ filter: filterValue });
+});
+
+// change is-checked class on buttons
+$('.button-group').each( function( i, buttonGroup ) {
+  var $buttonGroup = $( buttonGroup );
+  $buttonGroup.on( 'click', 'button', function( event ) {
+    $buttonGroup.find('.is-checked').removeClass('is-checked');
+    var $button = $( event.currentTarget );
+    $button.addClass('is-checked');
   });
-
-}).call(this);
-
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiPGFub255bW91cz4iXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFBQSxDQUFBLENBQUUsTUFBRixDQUFTLENBQUMsS0FBVixDQUFnQixRQUFBLENBQUEsQ0FBQTtJQUNkLENBQUEsQ0FBRSxNQUFGLENBQVMsQ0FBQyxRQUFWLENBQW1CLFNBQW5CO0lBQ0EsQ0FBQSxDQUFFLFdBQUYsQ0FBYyxDQUFDLFFBQWYsQ0FBd0IsUUFBeEI7SUFDQSxVQUFBLENBQVcsQ0FBQyxRQUFBLENBQUEsQ0FBQTthQUNWLENBQUEsQ0FBRSxXQUFGLENBQWMsQ0FBQyxXQUFmLENBQTJCLFFBQTNCO0lBRFUsQ0FBRCxDQUFYLEVBRUcsSUFGSDtXQUdBLFVBQUEsQ0FBVyxDQUFDLFFBQUEsQ0FBQSxDQUFBO2FBQ1YsQ0FBQSxDQUFFLE1BQUYsQ0FBUyxDQUFDLFdBQVYsQ0FBc0IsU0FBdEI7SUFEVSxDQUFELENBQVgsRUFFRyxJQUZIO0VBTmMsQ0FBaEI7QUFBQSIsInNvdXJjZXNDb250ZW50IjpbIiQoJy5idG4nKS5jbGljayAtPlxuICAkKCcuYnRuJykuYWRkQ2xhc3MgJ3BlbmRpbmcnXG4gICQoJy5wcm9ncmVzcycpLmFkZENsYXNzICdhY3RpdmUnXG4gIHNldFRpbWVvdXQgKC0+XG4gICAgJCgnLnByb2dyZXNzJykucmVtb3ZlQ2xhc3MgJ2FjdGl2ZSdcbiAgKSwgMjMwMFxuICBzZXRUaW1lb3V0ICgtPlxuICAgICQoJy5idG4nKS5yZW1vdmVDbGFzcyAncGVuZGluZydcbiAgKSwgMzYwMFxuIl19
-//# sourceURL=coffeescript
+});
+  
+// flatten object by concatting values
+function concatValues( obj ) {
+  var value = '';
+  for ( var prop in obj ) {
+    value += obj[ prop ];
+  }
+  return value;
+}
